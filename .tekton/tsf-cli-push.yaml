@@ -24,8 +24,6 @@ spec:
     value: '{{revision}}'
   - name: output-image
     value: quay.io/redhat-user-workloads/rhtap-shared-team-tenant/tsf-cli:{{revision}}
-  - name: image-expires-after
-    value: 180d
   - name: dockerfile
     value: Containerfile
   - name: build-platforms
