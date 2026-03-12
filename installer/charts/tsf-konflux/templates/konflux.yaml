@@ -38,6 +38,8 @@ metadata:
 spec:
   imageController:
     enabled: {{ $imageControllerEnabled }}
+  telemetry:
+    enabled: true
   info:
     spec:
       clusterConfig:
