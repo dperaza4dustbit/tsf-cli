@@ -41,8 +41,8 @@ require (
 	github.com/go-errors/errors v1.5.1 // indirect
 	github.com/go-gorp/gorp/v3 v3.1.0 // indirect
 	github.com/go-logr/logr v1.4.3 // indirect
-	github.com/go-openapi/jsonpointer v0.22.4 // indirect
-	github.com/go-openapi/jsonreference v0.21.4 // indirect
+	github.com/go-openapi/jsonpointer v0.22.5 // indirect
+	github.com/go-openapi/jsonreference v0.21.5 // indirect
 	github.com/go-openapi/swag v0.25.5 // indirect
 	github.com/go-openapi/swag/cmdutils v0.25.5 // indirect
 	github.com/go-openapi/swag/conv v0.25.5 // indirect
@@ -141,12 +141,12 @@ require (
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 	helm.sh/helm/v3 v3.20.1 // indirect
 	k8s.io/api v0.35.2 // indirect
-	k8s.io/apiextensions-apiserver v0.35.1 // indirect
+	k8s.io/apiextensions-apiserver v0.35.2 // indirect
 	k8s.io/apimachinery v0.35.2 // indirect
-	k8s.io/apiserver v0.35.1 // indirect
+	k8s.io/apiserver v0.35.2 // indirect
 	k8s.io/cli-runtime v0.35.1 // indirect
-	k8s.io/client-go v0.35.1 // indirect
-	k8s.io/component-base v0.35.1 // indirect
+	k8s.io/client-go v0.35.2 // indirect
+	k8s.io/component-base v0.35.2 // indirect
 	k8s.io/klog/v2 v2.140.0 // indirect
 	k8s.io/kube-openapi v0.0.0-20260304202019-5b3e3fdb0acf // indirect
 	k8s.io/kubectl v0.35.1 // indirect
