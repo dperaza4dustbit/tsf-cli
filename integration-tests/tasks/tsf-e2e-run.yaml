@@ -1,0 +1,112 @@
+---
+apiVersion: tekton.dev/v1
+kind: Task
+metadata:
+  name: tsf-e2e-run
+  annotations:
+    tekton.dev/displayName: "Run TSF E2E Tests"
+    tekton.dev/categories: "Testing"
+    tekton.dev/tags: "e2e,tsf-cli,ginkgo"
+spec:
+  description: >-
+    Clones the tsf-cli repository at the given revision, builds the
+    Ginkgo e2e test binary, and runs it against a cluster.
+  params:
+    - name: ocp-login-command
+      type: string
+      description: "Command to log in to the OpenShift cluster."
+    - name: tsf-cli-repo-url
+      type: string
+      description: "Repository URL to clone the e2e test source from."
+    - name: tsf-cli-revision
+      type: string
+      description: "Git revision (branch, tag, or commit SHA) to check out."
+  volumes:
+    - name: tsf-cli-install
+      secret:
+        secretName: tsf-cli-install
+  steps:
+    - name: run-e2e-tests
+      image: registry.access.redhat.com/ubi10/go-toolset:1.25.7-1772050924
+      env:
+        - name: OCP_LOGIN_COMMAND
+          value: "$(params.ocp-login-command)"
+        - name: TSF_CLI_REPO_URL
+          value: "$(params.tsf-cli-repo-url)"
+        - name: TSF_CLI_REVISION
+          value: "$(params.tsf-cli-revision)"
+        - name: E2E_APPLICATIONS_NAMESPACE
+          value: "default-tenant"
+      computeResources:
+        requests:
+          cpu: "2"
+          memory: 2Gi
+        limits:
+          memory: 6Gi
+      volumeMounts:
+        - name: tsf-cli-install
+          mountPath: /usr/local/tsf-cli-install
+      script: |
+        #!/usr/bin/env bash
+        set -o errexit
+        set -o nounset
+        set -o pipefail
+
+        # Install oc CLI
+        # TODO - use image with `oc` already present
+        mkdir -p "${HOME}/bin"
+        curl -sSfL https://mirror.openshift.com/pub/openshift-v4/clients/ocp/stable/openshift-client-linux.tar.gz \
+          | tar xz -C "${HOME}/bin" oc
+        export PATH="${HOME}/bin:${PATH}"
+
+        # Disable in-cluster config so the e2e framework uses the
+        # kubeconfig written by `oc login` instead of the pod's
+        # service account token.
+        unset KUBERNETES_SERVICE_HOST KUBERNETES_SERVICE_PORT
+
+        # Authenticate to the ephemeral cluster
+        eval "${OCP_LOGIN_COMMAND}"
+
+        # Export GitHub token and org from secret
+        export GITHUB_TOKEN="$(cat /usr/local/tsf-cli-install/github-token)"
+        export MY_GITHUB_ORG="$(cat /usr/local/tsf-cli-install/github-org)"
+
+        # Clone the repo at the PR revision
+        workdir="$(mktemp -d)"
+        git clone --depth 1 "${TSF_CLI_REPO_URL}" "${workdir}/tsf-cli"
+        cd "${workdir}/tsf-cli"
+        git fetch origin "${TSF_CLI_REVISION}"
+        git checkout FETCH_HEAD
+
+        # WORKAROUND: Patch image-controller to a version that includes
+        # fixes for the namespace robot account infinite reconcile loop.
+        # See: https://github.com/konflux-ci/image-controller/commit/faaa7f3
+        # Once the konflux operator ships a fixed image-controller, remove this block.
+        IC_FIXED_IMAGE="quay.io/konflux-ci/image-controller:faaa7f3"
+        IC_NAMESPACE="image-controller"
+        IC_DEPLOYMENT="image-controller-controller-manager"
+        OPERATOR_NAMESPACE="konflux-operator"
+        OPERATOR_DEPLOYMENT="konflux-operator-controller-manager"
+
+        echo "--- WORKAROUND: Patching image-controller ---"
+        # Scale down the konflux operator so it stops reverting the image
+        oc scale deployment "${OPERATOR_DEPLOYMENT}" -n "${OPERATOR_NAMESPACE}" --replicas=0
+        oc rollout status deployment "${OPERATOR_DEPLOYMENT}" -n "${OPERATOR_NAMESPACE}" --timeout=60s || true
+
+        # Patch the image-controller deployment with the fixed image
+        oc patch deployment "${IC_DEPLOYMENT}" -n "${IC_NAMESPACE}" --type=json \
+          -p="[{\"op\": \"replace\", \"path\": \"/spec/template/spec/containers/0/image\", \"value\": \"${IC_FIXED_IMAGE}\"}]"
+
+        # Wait for the new pod to be running
+        oc rollout status deployment "${IC_DEPLOYMENT}" -n "${IC_NAMESPACE}" --timeout=120s
+        echo "image-controller patched to ${IC_FIXED_IMAGE}"
+
+        # NOTE: Do NOT scale the operator back up here. It would revert
+        # the image-controller patch before the tests reach the critical
+        # ImageRepository provisioning phase.
+        echo "--- WORKAROUND complete (operator left scaled down) ---"
+
+        # Build and run the e2e tests
+        cd e2e
+        make build
+        ./bin/tsf.test --ginkgo.v --ginkgo.label-filter="tsf-demo"

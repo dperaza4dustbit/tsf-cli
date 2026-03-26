@@ -1,5 +1,13 @@
 
 {{- $secureSign := .Values.trustedArtifactSigner.secureSign -}}
+{{- $issuer := "https://kubernetes.default.svc" -}}
+{{- $auth := lookup "config.openshift.io/v1" "Authentication" "" "cluster" -}}
+{{- if $auth -}}
+  {{- /* Safely dig into the spec to find the serviceAccountIssuer */ -}}
+  {{- if and $auth.spec (hasKey $auth.spec "serviceAccountIssuer") -}}
+    {{- $issuer = $auth.spec.serviceAccountIssuer -}}
+  {{- end -}}
+{{- end -}}
 ---
 apiVersion: rhtas.redhat.com/v1alpha1
 kind: Securesign
@@ -20,12 +28,6 @@ spec:
           IssuerURL: "{{ $secureSign.fulcio.oidc.issuerURL }}"
           ClientID: {{ $secureSign.fulcio.oidc.clientID }}
           Type: email
-{{- $issuer := "https://kubernetes.default.svc" -}}
-{{- $configmap := lookup "v1" "ConfigMap" "openshift-kube-apiserver" "config" -}}
-{{- if $configmap -}}
-  {{- $configYaml := index $configmap.data "config.yaml" | fromYaml -}}
-  {{- $issuer = index $configYaml.apiServerArguments "service-account-issuer" | first -}}
-{{- end }}
         - ClientID: sigstore
           Issuer: {{ $issuer }}
           IssuerURL: {{ $issuer }}

@@ -26,6 +26,17 @@
 {{- $trustifyServiceUrl := required (printf "bombastic_api_service_url not found in secret 'tsf-trustification-integration' in namespace '%s'" .Values.konflux.tsf.namespace) (get $secretData "bombastic_api_service_url") | b64dec | toString -}}
 {{- $trustifyUrl := required (printf "bombastic_api_url not found in secret 'tsf-trustification-integration' in namespace '%s'" .Values.konflux.tsf.namespace) (get $secretData "bombastic_api_url") | b64dec | toString -}}
 
+{{- /* Lookup default OIDC issuer. Fallback to kubernetes.default.svc */ -}}
+{{- $issuer := "https://kubernetes.default.svc" -}}
+{{- $auth := lookup "config.openshift.io/v1" "Authentication" "" "cluster" -}}
+
+{{- if $auth -}}
+  {{- /* Safely dig into the spec to find the serviceAccountIssuer */ -}}
+  {{- if and $auth.spec (hasKey $auth.spec "serviceAccountIssuer") -}}
+    {{- $issuer = $auth.spec.serviceAccountIssuer -}}
+  {{- end -}}
+{{- end -}}
+
 {{- /* Enable imageController only when tsf-quay-integration url is https://quay.io */ -}}
 {{- $quaySecretObj := (lookup "v1" "Secret" .Values.konflux.tsf.namespace "tsf-quay-integration") | default dict -}}
 {{- $quaySecretData := (get $quaySecretObj "data") | default dict -}}
@@ -51,7 +62,7 @@ spec:
       clusterConfig:
         data:
           enableKeylessSigning: true
-          defaultOIDCIssuer: https://kubernetes.default.svc
+          defaultOIDCIssuer: {{ $issuer }}
           buildIdentityRegexp: "^https://kubernetes.io/namespaces/[a-z0-9-]+-tenant/serviceaccounts/build-pipeline-[a-z0-9-]+$"
           tektonChainsIdentity: https://kubernetes.io/namespaces/openshift-pipelines/serviceaccounts/tekton-chains-controller
           fulcioInternalUrl: {{ $fulcioInternalUrl | quote }}

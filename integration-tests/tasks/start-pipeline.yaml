@@ -155,7 +155,6 @@ spec:
         # Required child params and static pipeline labels.
         tkn_params=(
           "--param" "ocp-version=${OCP_VERSION}"
-          "--param" "job-spec=${JOB_SPEC}"
           "--param" "konflux-test-infra-secret=${KONFLUX_TEST_INFRA_SECRET}"
           "--param" "cloud-credential-key=${CLOUD_CREDENTIAL_KEY}"
           "--param" "machine-type=${OCP_INSTANCE_TYPE}"

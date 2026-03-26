@@ -18,7 +18,7 @@ spec:
         type: string
       - name: ocp-instance-type
         description: 'The type of machine to use for the cluster nodes.'
-        default: "m5.2xlarge"
+        default: "m5.4xlarge"
         type: string
       - name: ocp-replicas
         description: 'The number of replicas for the cluster nodes.'
@@ -33,7 +33,7 @@ spec:
       - name: min-success-count
         description: "Minimum number of successful nested runs required for main pipeline success."
         type: string
-        default: "2"
+        default: "1"
       - name: konflux-ui-url
         description: "Base Konflux UI URL used to build nested PipelineRun links."
         type: string
