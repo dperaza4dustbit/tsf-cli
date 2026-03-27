@@ -29,10 +29,9 @@
 {{- /* Lookup default OIDC issuer. Fallback to kubernetes.default.svc */ -}}
 {{- $issuer := "https://kubernetes.default.svc" -}}
 {{- $auth := lookup "config.openshift.io/v1" "Authentication" "" "cluster" -}}
-
 {{- if $auth -}}
   {{- /* Safely dig into the spec to find the serviceAccountIssuer */ -}}
-  {{- if and $auth.spec (hasKey $auth.spec "serviceAccountIssuer") -}}
+  {{- if and $auth.spec (hasKey $auth.spec "serviceAccountIssuer") (ne $auth.spec.serviceAccountIssuer "") -}}
     {{- $issuer = $auth.spec.serviceAccountIssuer -}}
   {{- end -}}
 {{- end -}}
