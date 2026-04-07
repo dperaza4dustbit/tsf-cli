@@ -1,6 +1,6 @@
 # Getting started with Trusted Software Factory
 
-After installing and verifying TSF, onboard your first application to see the secure build pipeline in action. This guide walks through the developer workflow: creating an application, onboarding a component from a Git repository, triggering a build, configuring a release, and verifying the signed artifacts.
+After installing and verifying TSF, onboard your first application to see the secure build pipeline in action. This guide walks through the developer workflow: creating an application, onboarding a component from a Git repository, triggering a build, configuring a release, and verifying signed artifacts.
 
 **Persona:** Developer — builds and ships applications using the software factory that the Platform Engineer installed.
 
@@ -9,9 +9,9 @@ After installing and verifying TSF, onboard your first application to see the se
 - TSF is [installed](installing.md) and [verified](verifying-and-accessing.md) on your OCP cluster.
 - You can log in to the Konflux UI.
 - You have a GitHub repository with source code that you want to build. If you do not have one, fork a sample application repository to your GitHub organization.
-- The GitHub App created during installation is installed on the organization that contains your repository.
+- You have installed the GitHub App on the GitHub organization that contains your repository.
 
-## Logging in to the Konflux UI
+## Log in to the Konflux UI
 
 1. Open the Konflux UI URL in a web browser.
 
@@ -21,7 +21,7 @@ After installing and verifying TSF, onboard your first application to see the se
 
 The Konflux dashboard displays the **Get started with Konflux** landing page.
 
-## Creating an application
+## Create an application
 
 An application in Konflux is a logical grouping of one or more components that are built, tested, and released together.
 
@@ -33,9 +33,9 @@ An application in Konflux is a logical grouping of one or more components that a
 
 For more details, see [Creating an application](https://konflux-ci.dev/docs/building/creating/#creating-an-application) in the Konflux documentation.
 
-## Creating a component
+## Create a component
 
-A component maps to a single Git repository and branch. When you create a component, Konflux onboards the repository and sets up the build pipeline.
+A component maps to a single Git repository and branch. When you create a component, Konflux onboards the repository and configures the build pipeline.
 
 1. From your application page, click **Add component**.
 
@@ -61,9 +61,9 @@ After you create a component, Konflux automatically:
 
    You can click through to view logs and additional information.
 
-> **Important:** Do not merge this pull request yet. Set up a release first so you can see the full end-to-end flow.
+> **Important:** Do not merge this pull request yet. Configure a release first so you can see the full end-to-end flow.
 
-## Configuring a release
+## Configure a release
 
 By default, onboarded components are not automatically released. A Platform Engineer must configure the release criteria and destination before artifacts can be released.
 
@@ -77,9 +77,9 @@ Log in to the OCP cluster as the Platform Engineer (cluster admin) and run the s
 
 This script creates the necessary release plan, release policy, and release pipeline resources.
 
-## Triggering a release
+## Trigger a release
 
-Now that a component has been created and a release has been configured, releases happen automatically from push events.
+After you create a component and configure a release, releases happen automatically from push events.
 
 1. Go to your Git repository and merge the pull request that Konflux created.
 
@@ -91,7 +91,7 @@ Now that a component has been created and a release has been configured, release
 
 5. Track the release progress in the UI. At the end of the release, the image is available in a Quay repository.
 
-## Verifying the build artifacts
+## Verify the build artifacts
 
 After the build and release complete, verify the security artifacts that TSF produced:
 
@@ -106,7 +106,7 @@ After the build and release complete, verify the security artifacts that TSF pro
 3. **SBOM in Trusted Profile Analyzer:**
    - Open the Red Hat Trusted Profile Analyzer UI.
    - The software bill of materials (SBOM) is available, showing all packages and dependencies.
-   - Vulnerability reports and license information are displayed.
+   - The UI displays vulnerability reports and license information.
 
 4. **Signature verification:**
    - Verify the image signature using `cosign`:
@@ -117,9 +117,9 @@ After the build and release complete, verify the security artifacts that TSF pro
 
    - View the Rekor transparency log entry for the signing event.
 
-## What's next
+## Next steps
 
 - **Onboard more components** to build your full application stack.
 - **Customize the build pipeline** by editing the `.tekton/` files in your repository.
 - **Configure policy** using Conforma to enforce your organization's security requirements.
-- **Set up additional integration tests** to validate your builds against custom criteria.
+- **Configure additional integration tests** to validate your builds against custom criteria.
