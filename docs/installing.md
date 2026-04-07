@@ -2,14 +2,14 @@
 
 Install Trusted Software Factory (TSF) by starting the installer container, configuring the cluster and integrations, and deploying all services. This phase assumes you have [prepared your environment and credentials](preparing-to-install.md).
 
-## Starting the installer container
+## Start the installer container
 
 Start the TSF installer container using Podman. The installer runs in a container image that includes the `tsf` command-line tool and all required dependencies.
 
 ### Prerequisites
 
 - You have prepared the `tsf.env` file with your cluster and integration credentials.
-- Podman is installed on your local system.
+- You have Podman installed on your local system.
 
 ### Steps
 
@@ -45,7 +45,7 @@ oc whoami
 
 The output should show the username you specified in your environment file.
 
-## Configuring the cluster
+## Configure the cluster
 
 Create the TSF configuration on your OCP cluster. This step creates a ConfigMap that defines which components TSF installs and how they are configured.
 
@@ -96,13 +96,13 @@ oc get configmap tsf-config -n tsf
 
 The output should show the `tsf-config` ConfigMap in the `tsf` namespace.
 
-## Configuring the GitHub integration
+## Configure the GitHub integration
 
 Create and install a GitHub App that enables TSF to interact with your GitHub repositories. The GitHub App provides webhooks for triggering builds and access to repository contents.
 
 ### Prerequisites
 
-- The TSF installer container is running.
+- You have started the TSF installer container.
 - You are logged in to the OCP cluster.
 - You have created the TSF configuration on the cluster.
 - You have a GitHub organization.
@@ -140,13 +140,13 @@ Create and install a GitHub App that enables TSF to interact with your GitHub re
 - The GitHub App page displays with a **Website** link that points to the Konflux UI. You can use this link to access the UI after deployment is complete.
 - In the GitHub organization settings under **Developer settings > GitHub Apps**, the newly created app appears with the correct permissions.
 
-## Configuring the GitLab integration
+## Configure the GitLab integration
 
-If you are using GitLab instead of GitHub as your source control management system, configure the GitLab integration by creating a Project Access Token for each GitLab project that you want to onboard to TSF.
+If you are using GitLab instead of GitHub, configure the GitLab integration. Create a Project Access Token for each GitLab project that you want to onboard to TSF.
 
 ### Prerequisites
 
-- The TSF installer container is running.
+- You have started the TSF installer container.
 - You are logged in to the OCP cluster.
 - You have a GitLab project that you want to onboard.
 
@@ -197,13 +197,13 @@ Verify that the secret was created:
 oc get secret gitlab-auth-secret -n <tenant-namespace>
 ```
 
-## Configuring the Quay integration
+## Configure the Quay integration
 
 Configure the Quay registry integration so that TSF can push built container images to your Quay organization.
 
 ### Prerequisites
 
-- The TSF installer container is running.
+- You have started the TSF installer container.
 - You are logged in to the OCP cluster.
 - You have created a Quay OAuth token with access to your Quay organization.
 
@@ -230,13 +230,13 @@ oc get secret tsf-quay-integration -n tsf
 
 The output should show the `tsf-quay-integration` secret of type `Opaque`.
 
-## Deploying TSF
+## Deploy TSF
 
 Deploy all TSF services to your OCP cluster. This step installs and configures all components of the software factory using Helm charts.
 
 ### Prerequisites
 
-- The TSF installer container is running.
+- You have started the TSF installer container.
 - You are logged in to your OCP cluster with `cluster-admin` access.
 - You have created the TSF configuration on the cluster.
 - You have configured the GitHub or GitLab integration and the Quay integration.
