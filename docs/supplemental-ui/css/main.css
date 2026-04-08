@@ -1,0 +1,69 @@
+.navbar .button {
+  display: inline-flex;
+  -webkit-box-align: center;
+  align-items: center;
+  background: #fff;
+  border: 1px solid #e1e1e1;
+  border-radius: 0.5rem;
+  height: auto;
+  font-size: 18px;
+  color: #222;
+  padding: 1em;
+  margin: 0.8em;
+  white-space: nowrap;
+}
+
+.navbar-burger {
+  margin-left: 0;
+}
+
+.nav-list .nav-item.is-current-page {
+  border-left: 0.5rem solid #c6c6c6;
+  padding-left: 1rem;
+  margin-left: -1.5rem;
+  background-color: #dadada;
+}
+
+.nav-container {
+  width: 17rem;
+}
+
+.nav-container .nav {
+  background-color: #eee;
+}
+
+.doc .title {
+  font-weight: bold;
+  color: #3a415f;
+}
+
+.doc .admonitionblock .icon {
+  border-radius: 1rem;
+}
+
+.navbar-brand .navbar-item:first-child a {
+  margin-top: 5px;
+}
+
+.pagination {
+  display: flex;
+  justify-content: space-between;
+  padding: 1rem 0;
+  margin-top: 2rem;
+  border-top: 1px solid #e1e1e1;
+}
+
+.pagination .prev a,
+.pagination .next a {
+  color: #1565c0;
+  text-decoration: none;
+}
+
+.pagination .prev a:hover,
+.pagination .next a:hover {
+  text-decoration: underline;
+}
+
+.pagination .next {
+  margin-left: auto;
+}

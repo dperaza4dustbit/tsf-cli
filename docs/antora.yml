@@ -12,6 +12,7 @@ asciidoc:
     idseparator: '-'
     idprefix: ''
     experimental: ''
+    pagination: ''
     # Product attributes
     TSFName: 'Trusted Software Factory'
     TSFShortName: 'TSF'

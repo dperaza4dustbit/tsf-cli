@@ -14,5 +14,9 @@ ui:
     snapshot: true
   supplemental_files: docs/supplemental-ui
 
+antora:
+  extensions:
+  - '@antora/lunr-extension'
+
 output:
   dir: build/site
