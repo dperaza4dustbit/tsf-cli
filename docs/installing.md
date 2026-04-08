@@ -112,7 +112,7 @@ Create and install a GitHub App that enables TSF to interact with your GitHub re
 1. Create the GitHub App:
 
    ```bash
-   tsf integration github --create --org "$GITHUB__ORG" "tsf-$(date +%m%d-%H%M)"
+   tsf integration github --create --org "$GITHUB__ORG" "<my_github_app_name>"
    ```
 
    The command outputs a URL starting with `http://localhost:8228`.
@@ -262,7 +262,7 @@ Deploy all TSF services to your OCP cluster. This step installs and configures a
    - `tsf-tas`
    - `tsf-tpa`
 
-   > **Note:** The deployment typically takes 30 to 60 minutes. Some charts may take several minutes without producing output. This is expected behavior. If deployment fails, you can re-run the `tsf deploy` command. The installer attempts to deploy all charts, including those that previously succeeded.
+   > **Note:** The deployment typically takes about 15 minutes. Some charts may take several minutes without producing output. This is expected behavior. If deployment fails, you can re-run the `tsf deploy` command. The installer attempts to deploy all charts, including those that previously succeeded.
 
 2. Monitor the command output. As the deployment progresses, the CLI prints the status of each Helm chart, including:
    - Chart name, version, and namespace
