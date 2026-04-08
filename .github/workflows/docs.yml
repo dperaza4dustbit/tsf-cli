@@ -35,11 +35,11 @@ jobs:
         with:
           node-version: '20'
 
-      - name: Install Antora
-        run: npm i -g @antora/cli@3.1 @antora/site-generator@3.1
+      - name: Install Antora and extensions
+        run: npm i -g @antora/cli@3.1 @antora/site-generator@3.1 @antora/lunr-extension@1.0.0-alpha.13
 
       - name: Build site
-        run: antora --fetch antora-playbook.yml
+        run: SITE_SEARCH_PROVIDER=lunr antora --fetch antora-playbook.yml
 
       - name: Disable Jekyll
         run: touch build/site/.nojekyll
